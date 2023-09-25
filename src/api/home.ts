@@ -1,4 +1,4 @@
-import type { BannerItem } from '@/types/home';
+import type { BannerItem, CategoryItem } from '@/types/home';
 import http from '../common/request';
 
 /**
@@ -10,6 +10,18 @@ export const getRegionBanner = async (distributionSite: number = 1) => {
 		const { result } = await http.get<BannerItem[]>('/home/banner', {
 			data: { distributionSite }
 		});
+		return result;
+	} catch (error) {
+		return [];
+	}
+};
+
+/**
+ * 获取首页分类
+ */
+export const getHomeCategory = async () => {
+	try {
+		const { result } = await http.get<CategoryItem[]>('/home/category/mutli');
 		return result;
 	} catch (error) {
 		return [];
