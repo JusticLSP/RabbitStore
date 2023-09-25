@@ -1,8 +1,11 @@
 <template>
 	<CustomNavbar></CustomNavbar>
-	<XtxSwiper :list="banner_list"></XtxSwiper>
-	<CategoryPanel :list="category_list"></CategoryPanel>
-	<HotPanel :list="hot_list"></HotPanel>
+	<scroll-view class="scroll-view" :scroll-y="true" @scrolltolower="onScrolltolower">
+		<XtxSwiper :list="banner_list"></XtxSwiper>
+		<CategoryPanel :list="category_list"></CategoryPanel>
+		<HotPanel :list="hot_list"></HotPanel>
+		<XtxGuess ref="guessRef"></XtxGuess>
+	</scroll-view>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +16,7 @@ import HotPanel from './components/HotPanel.vue';
 import { onLoad } from '@dcloudio/uni-app';
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home';
 import { ref } from 'vue';
+import type { XtxGuessInstance } from '@/types/components';
 
 // 获取首页展示图
 const banner_list = ref<BannerItem[]>([]);
@@ -35,6 +39,12 @@ const getHomeHotData = async () => {
 	hot_list.value = hot;
 };
 
+// 滚到底部时触发
+const guessRef = ref<XtxGuessInstance>();
+const onScrolltolower = () => {
+	guessRef.value?.loadMore();
+};
+
 onLoad(() => {
 	getHomeBannerData();
 	getHomeCategoryData();
@@ -45,5 +55,12 @@ onLoad(() => {
 <style lang="scss">
 page {
 	background-color: #f7f7f7;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	.scroll-view {
+		flex: 1;
+		overflow: hidden;
+	}
 }
 </style>
