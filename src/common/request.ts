@@ -27,6 +27,7 @@ const interceptor = {
 uni.addInterceptor('request', interceptor);
 uni.addInterceptor('uploadFile', interceptor);
 
+// 接口返回数据类型
 interface Data<T> {
 	code: string;
 	msg: string;

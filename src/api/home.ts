@@ -1,3 +1,4 @@
+import type { BannerItem } from '@/types/home';
 import http from '../common/request';
 
 /**
@@ -6,7 +7,7 @@ import http from '../common/request';
  */
 export const getRegionBanner = async (distributionSite: number = 1) => {
 	try {
-		const { result } = await http.get<object[]>('/home/banner', {
+		const { result } = await http.get<BannerItem[]>('/home/banner', {
 			data: { distributionSite }
 		});
 		return result;
