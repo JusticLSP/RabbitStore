@@ -30,7 +30,7 @@
 						</view>
 						<view class="section">
 							<template v-for="goods in child.goods" :key="goods.id">
-								<navigator class="goods" hover-class="none" :url="`/pages/goods/goods?id=${goods.id}`">
+								<navigator class="goods" hover-class="none" :url="`/pages/goods/index?id=${goods.id}`">
 									<image class="image" :src="goods.picture"></image>
 									<view class="name ellipsis">{{ goods.name }}</view>
 									<view class="price">

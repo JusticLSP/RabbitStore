@@ -1,0 +1,59 @@
+/* 底部工具栏 */
+.toolbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: calc(var(--window-bottom));
+	z-index: 1;
+	background-color: #fff;
+	height: 100rpx;
+	padding: 0 20rpx;
+	border-top: 1rpx solid #eaeaea;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-sizing: content-box;
+	.buttons {
+		display: flex;
+		& > view {
+			width: 220rpx;
+			text-align: center;
+			line-height: 72rpx;
+			font-size: 26rpx;
+			color: #fff;
+			border-radius: 72rpx;
+		}
+		.addcart {
+			background-color: #ffa868;
+		}
+		.buynow,
+		.payment {
+			background-color: #27ba9b;
+			margin-left: 20rpx;
+		}
+	}
+	.icons {
+		padding-right: 10rpx;
+		display: flex;
+		align-items: center;
+		flex: 1;
+		.icons-button {
+			flex: 1;
+			text-align: center;
+			line-height: 1.4;
+			padding: 0;
+			margin: 0;
+			border-radius: 0;
+			font-size: 20rpx;
+			color: #333;
+			background-color: #fff;
+			&::after {
+				border: none;
+			}
+		}
+		text {
+			display: block;
+			font-size: 34rpx;
+		}
+	}
+}
