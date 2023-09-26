@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { getRegionBanner, getHomeCategory, getHomeHot } from '@/api/home';
+import { getRegionBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/api/home';
 import CustomNavbar from './components/CustomNavbar.vue';
 import CategoryPanel from './components/CategoryPanel.vue';
 import HotPanel from './components/HotPanel.vue';
@@ -33,21 +33,21 @@ import type { XtxGuessInstance } from '@/types/components';
 // 获取首页展示图
 const banner_list = ref<BannerItem[]>([]);
 const getHomeBannerData = async () => {
-	const banner = await getRegionBanner();
+	const banner = await getRegionBannerAPI();
 	banner_list.value = banner;
 };
 
 // 获取首页分类
 const category_list = ref<CategoryItem[]>([]);
 const getHomeCategoryData = async () => {
-	const category = await getHomeCategory();
+	const category = await getHomeCategoryAPI();
 	category_list.value = category;
 };
 
 // 获取首页热门推荐
 const hot_list = ref<HotItem[]>([]);
 const getHomeHotData = async () => {
-	const hot = await getHomeHot();
+	const hot = await getHomeHotAPI();
 	hot_list.value = hot;
 };
 

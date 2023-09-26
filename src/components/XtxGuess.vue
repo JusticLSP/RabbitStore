@@ -17,11 +17,11 @@
 </template>
 <script setup lang="ts">
 import { useGetPageList } from '@/hooks/useGetPageList';
-import { getHomeGuessLike } from '@/api/home';
+import { getHomeGuessLikeAPI } from '@/api/home';
 import type { GuessItem } from '@/types/home';
 import { onMounted } from 'vue';
 
-const { list, finish, getPageListData, resetPageListData } = useGetPageList<GuessItem>(getHomeGuessLike);
+const { list, finish, getPageListData, resetPageListData } = useGetPageList<GuessItem>(getHomeGuessLikeAPI);
 
 onMounted(() => {
 	getPageListData();
