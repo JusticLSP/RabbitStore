@@ -34,6 +34,12 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
+		},
+		{
+			"path": "pages/hot/index",
+			"style": {
+				"navigationBarTitleText": "热门推荐"
+			}
 		}
 	],
 	"globalStyle": {
