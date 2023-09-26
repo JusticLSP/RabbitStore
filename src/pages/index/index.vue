@@ -7,10 +7,15 @@
 		:refresher-triggered="is_triggered"
 		@refresherrefresh="onRefresherrefresh"
 		@scrolltolower="onScrolltolower">
-		<XtxSwiper :list="banner_list"></XtxSwiper>
-		<CategoryPanel :list="category_list"></CategoryPanel>
-		<HotPanel :list="hot_list"></HotPanel>
-		<XtxGuess ref="guessRef"></XtxGuess>
+		<template v-if="is_loading">
+			<PageSkeleton></PageSkeleton>
+		</template>
+		<template v-else>
+			<XtxSwiper :list="banner_list"></XtxSwiper>
+			<CategoryPanel :list="category_list"></CategoryPanel>
+			<HotPanel :list="hot_list"></HotPanel>
+			<XtxGuess ref="guessRef"></XtxGuess>
+		</template>
 	</scroll-view>
 </template>
 
@@ -19,6 +24,7 @@ import { getRegionBanner, getHomeCategory, getHomeHot } from '@/api/home';
 import CustomNavbar from './components/CustomNavbar.vue';
 import CategoryPanel from './components/CategoryPanel.vue';
 import HotPanel from './components/HotPanel.vue';
+import PageSkeleton from './components/PageSkeleton.vue';
 import { onLoad } from '@dcloudio/uni-app';
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home';
 import { ref } from 'vue';
@@ -58,10 +64,12 @@ const onRefresherrefresh = async () => {
 	is_triggered.value = false;
 };
 
-onLoad(() => {
-	getHomeBannerData();
-	getHomeCategoryData();
-	getHomeHotData();
+// 页面加载
+const is_loading = ref(false);
+onLoad(async () => {
+	is_loading.value = true;
+	await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()]);
+	is_loading.value = false;
 });
 </script>
 
