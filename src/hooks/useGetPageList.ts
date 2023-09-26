@@ -10,9 +10,9 @@ export const useGetPageList = <T>(requestApi: (data: PageParams) => Promise<Page
 		page: 1,
 		pageSize: 10
 	};
-	const list = ref([]) as Ref<T[]>;
+	const list: Ref<T[]> = ref([]);
 	const finish = ref(false);
-	//获取分页列表数据
+	// 获取分页列表数据
 	const getPageListData = async () => {
 		if (finish.value) return uni.showToast({ icon: 'none', title: '没有数据了~' });
 		const { pages, items } = await requestApi(page_params);
@@ -24,6 +24,13 @@ export const useGetPageList = <T>(requestApi: (data: PageParams) => Promise<Page
 			finish.value = true;
 		}
 	};
+	// 重置分页列表数据
+	const resetPageListData = async () => {
+		page_params.page = 1;
+		list.value = [];
+		finish.value = false;
+		await getPageListData();
+	};
 
-	return { list, finish, getPageListData };
+	return { list, finish, getPageListData, resetPageListData };
 };

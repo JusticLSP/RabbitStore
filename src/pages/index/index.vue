@@ -1,6 +1,12 @@
 <template>
 	<CustomNavbar></CustomNavbar>
-	<scroll-view class="scroll-view" :scroll-y="true" @scrolltolower="onScrolltolower">
+	<scroll-view
+		class="scroll-view"
+		:scroll-y="true"
+		refresher-enabled
+		:refresher-triggered="is_triggered"
+		@refresherrefresh="onRefresherrefresh"
+		@scrolltolower="onScrolltolower">
 		<XtxSwiper :list="banner_list"></XtxSwiper>
 		<CategoryPanel :list="category_list"></CategoryPanel>
 		<HotPanel :list="hot_list"></HotPanel>
@@ -43,6 +49,13 @@ const getHomeHotData = async () => {
 const guessRef = ref<XtxGuessInstance>();
 const onScrolltolower = () => {
 	guessRef.value?.loadMore();
+};
+// 自定义下拉触发
+const is_triggered = ref(false);
+const onRefresherrefresh = async () => {
+	is_triggered.value = true;
+	await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData(), guessRef.value?.resetData()]);
+	is_triggered.value = false;
 };
 
 onLoad(() => {

@@ -21,13 +21,14 @@ import { getHomeGuessLike } from '@/api/home';
 import type { GuessItem } from '@/types/home';
 import { onMounted } from 'vue';
 
-const { list, finish, getPageListData } = useGetPageList<GuessItem>(getHomeGuessLike);
+const { list, finish, getPageListData, resetPageListData } = useGetPageList<GuessItem>(getHomeGuessLike);
 
 onMounted(() => {
 	getPageListData();
 });
 defineExpose({
-	loadMore: getPageListData
+	loadMore: getPageListData,
+	resetData: resetPageListData
 });
 </script>
 <style lang="scss">
