@@ -1,5 +1,6 @@
 <template>
-	<view class="viewport">
+	<pageSkeleton v-if="is_loading"></pageSkeleton>
+	<view class="viewport" v-else>
 		<!-- 搜索框 -->
 		<view class="search">
 			<view class="input">
@@ -52,6 +53,7 @@ import type { BannerItem } from '@/types/home';
 import type { CategoryTopItem, CategoryChildItem } from '@/types/category';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, reactive, nextTick } from 'vue';
+import pageSkeleton from './components/PageSkeleton.vue';
 
 // 获取轮播图
 const banner_list = ref<BannerItem[]>([]);
@@ -87,9 +89,12 @@ const changeCategort = (item: CategoryTopItem, index: number) => {
 	sub_category_list.value = item.children;
 };
 
-onLoad(() => {
-	getBannerData();
-	getCategoryTopData();
+// 页面加载
+const is_loading = ref(false);
+onLoad(async () => {
+	is_loading.value = true;
+	await Promise.all([getBannerData(), getCategoryTopData()]);
+	is_loading.value = false;
 });
 </script>
 <style lang="scss">
@@ -103,7 +108,7 @@ page {
 	flex-direction: column;
 }
 .search {
-	padding: 0 30rpx 20rpx;
+	padding: 20rpx 30rpx;
 	background-color: #fff;
 	.input {
 		display: flex;
