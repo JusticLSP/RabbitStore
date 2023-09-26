@@ -6,7 +6,7 @@
 	<view class="guess">
 		<navigator class="guess-item" v-for="item in list" :key="item.id" :url="`/pages/goods/goods?id=4007498`">
 			<image class="image" mode="aspectFill" :src="item.picture"></image>
-			<view class="name">{{ item.name }}</view>
+			<view class="name ellipsis">{{ item.name }}</view>
 			<view class="price">
 				<text class="small">¥</text>
 				<text>{{ item.price }}</text>
@@ -85,11 +85,6 @@ defineExpose({
 		margin: 10rpx 0;
 		font-size: 26rpx;
 		color: #262626;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
 	}
 	.price {
 		line-height: 1;
