@@ -10,13 +10,3 @@ onHide(() => {
 	console.log('App Hide');
 });
 </script>
-<style lang="scss">
-// 两行省略
-.ellipsis {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-}
-</style>
