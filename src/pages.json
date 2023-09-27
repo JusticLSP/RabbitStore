@@ -46,6 +46,12 @@
 			"style": {
 				"navigationBarTitleText": "商品详情"
 			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "小兔鲜儿"
+			}
 		}
 	],
 	"globalStyle": {
