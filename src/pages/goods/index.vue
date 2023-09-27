@@ -4,17 +4,17 @@
 		<view class="goods">
 			<!-- 商品主图 -->
 			<view class="preview">
-				<swiper class="swiper-container" circular>
+				<swiper class="swiper-container" circular @change="onChangePictures">
 					<template v-for="item in goods_details?.mainPictures" :key="item">
 						<swiper-item>
-							<image class="image" mode="heightFix" :src="item" />
+							<image class="image" mode="heightFix" :src="item" @tap="onPreviewPictures(item)" />
 						</swiper-item>
 					</template>
 				</swiper>
-				<view class="indicator">
-					<text class="current">1</text>
+				<view class="indicator" v-show="goods_details?.mainPictures">
+					<text class="current">{{ current_index + 1 }}</text>
 					<text class="split">/</text>
-					<text class="total">5</text>
+					<text class="total">{{ goods_details?.mainPictures.length }}</text>
 				</view>
 			</view>
 			<!-- 商品简介 -->
@@ -119,8 +119,22 @@ const query = defineProps<{ id: string }>();
 // 获取商品详情信息
 const goods_details = ref<GoodsResult>();
 const getGoodsDetails = async () => {
-	const detail = await getGoodsDetailsAPI(query.id);
-	goods_details.value = detail;
+	const details = await getGoodsDetailsAPI(query.id);
+	goods_details.value = details;
+};
+
+// 更改主图轮播图
+const current_index = ref(0);
+const onChangePictures: UniHelper.SwiperOnChange = (e) => {
+	current_index.value = e.detail.current;
+};
+// 预览主图
+const onPreviewPictures = (url: string) => {
+	uni.previewImage({
+		current: url,
+		urls: goods_details.value!.mainPictures,
+		loop: true
+	});
 };
 
 onLoad(() => {
@@ -139,5 +153,5 @@ page {
 	overflow: hidden;
 }
 @import './styles/basic.scss';
-@import './styles/bottom';
+@import './styles/bottom.scss';
 </style>
