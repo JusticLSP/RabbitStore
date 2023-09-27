@@ -11,7 +11,7 @@
 						</swiper-item>
 					</template>
 				</swiper>
-				<view class="indicator" v-show="goods_details?.mainPictures">
+				<view class="indicator">
 					<text class="current">{{ current_index + 1 }}</text>
 					<text class="split">/</text>
 					<text class="total">{{ goods_details?.mainPictures.length }}</text>
@@ -32,11 +32,11 @@
 					<text class="label">选择</text>
 					<text class="text ellipsis">请选择商品规格</text>
 				</view>
-				<view class="item arrow">
+				<view class="item arrow" @tap="openPopup('address')">
 					<text class="label">送至</text>
 					<text class="text ellipsis">请选择收获地址</text>
 				</view>
-				<view class="item arrow">
+				<view class="item arrow" @tap="openPopup('service')">
 					<text class="label">服务</text>
 					<text class="text ellipsis">无忧退 快速退款 免费包邮</text>
 				</view>
@@ -103,12 +103,18 @@
 			<view class="buynow">立即购买</view>
 		</view>
 	</view>
+	<uni-popup ref="popup" type="bottom" background-color="#fff">
+		<AddressPanel v-if="popup_name === 'address'" @close="popup?.close()"></AddressPanel>
+		<ServicePanel v-if="popup_name === 'service'" @close="popup?.close()"></ServicePanel>
+	</uni-popup>
 </template>
 <script setup lang="ts">
 import { getGoodsDetailsAPI } from '@/api/goods';
 import type { GoodsResult } from '@/types/goods';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
+import AddressPanel from './components/AddressPanel.vue';
+import ServicePanel from './components/ServicePanel.vue';
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
@@ -135,6 +141,15 @@ const onPreviewPictures = (url: string) => {
 		urls: goods_details.value!.mainPictures,
 		loop: true
 	});
+};
+
+// uni-ui 弹出层ref
+const popup = ref<{ open: (type?: UniHelper.UniPopupType) => void; close: () => void }>();
+const popup_name = ref<'address' | 'service'>();
+// 打开弹出层
+const openPopup = (name: typeof popup_name.value) => {
+	popup_name.value = name;
+	popup.value?.open();
 };
 
 onLoad(() => {
