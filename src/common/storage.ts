@@ -19,10 +19,10 @@ export const createStorage = (prefix_key: string = '') => {
 		/**
 		 * 同步存储
 		 * @param  {string} key 存储key
-		 * @param  {T} value 存储值
+		 * @param  {unknown} value 存储值
 		 * @param  {number=DEFAULT_CACHE_TIME} expire 到期时间
 		 */
-		setSync<T>(key: string, value: T, expire: number | null = DEFAULT_CACHE_TIME) {
+		setSync(key: string, value: unknown, expire: number | null = DEFAULT_CACHE_TIME) {
 			const storage_data = JSON.stringify({
 				value,
 				expire: expire !== null ? new Date().getTime() + expire * 1000 : null
@@ -32,9 +32,8 @@ export const createStorage = (prefix_key: string = '') => {
 		/**
 		 * 同步获取存储
 		 * @param  {string} key 存储key
-		 * @param  {T} def 默认值
 		 */
-		getSync<T>(key: string, def: T): T {
+		getSync(key: string) {
 			const item = uni.getStorageSync(this.getKey(key));
 			if (item) {
 				try {
@@ -45,10 +44,10 @@ export const createStorage = (prefix_key: string = '') => {
 					}
 					this.removeSync(key);
 				} catch (error) {
-					return def;
+					return null;
 				}
 			}
-			return def;
+			return null;
 		}
 		/**
 		 * 同步删除存储
