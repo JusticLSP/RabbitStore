@@ -13,7 +13,7 @@
 							</swiper-item>
 						</template>
 					</swiper>
-					<view class="indicator">
+					<view class="indicator" v-if="goods_details?.mainPictures">
 						<text class="current">{{ current_index + 1 }}</text>
 						<text class="split">/</text>
 						<text class="total">{{ goods_details?.mainPictures.length }}</text>
