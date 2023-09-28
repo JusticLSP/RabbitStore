@@ -16,8 +16,14 @@ export const useMemberStore = defineStore(
 		const setMemberInfo = (info: LoginResult) => {
 			member_info.value = info;
 		};
+		/**
+		 * 清空用户信息
+		 */
+		const clearMemberInfo = () => {
+			member_info.value = undefined;
+		};
 
-		return { member_info, setMemberInfo };
+		return { member_info, setMemberInfo, clearMemberInfo };
 	},
 	{
 		persist: { storage: storage_config }
