@@ -179,7 +179,7 @@ page {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
-		padding: 40rpx 20rpx 10rpx;
+		padding: 40rpx 0 10rpx;
 		.navigator,
 		.contact {
 			text-align: center;
@@ -197,6 +197,9 @@ page {
 			border: 0;
 			background-color: transparent;
 			line-height: inherit;
+			&::after {
+				content: none;
+			}
 		}
 	}
 }
