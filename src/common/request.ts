@@ -1,3 +1,5 @@
+import { useMemberStore } from '@/stores/modules/member';
+
 // 基础请求地址
 const base_url = import.meta.env.VITE_APP_BASE_API;
 const url_rule = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i;
@@ -21,6 +23,8 @@ const interceptor = {
 			'source-client': 'miniapp'
 		};
 		// 添加用户token信息
+		const member_store = useMemberStore();
+		options.header['Authorization'] = member_store.member_info?.token || null;
 	}
 };
 
