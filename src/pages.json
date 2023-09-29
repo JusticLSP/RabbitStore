@@ -103,6 +103,14 @@
 					"style": {
 						"navigationBarTitleText": "设置"
 					}
+				},
+				{
+					"path": "memberInfo/index",
+					"style": {
+						"navigationBarTitleText": "个人信息",
+						"navigationStyle": "custom",
+						"navigationBarTextStyle": "white"
+					}
 				}
 			]
 		}
