@@ -4,12 +4,12 @@
 		<view class="profile" :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
 			<!-- 情况1：已登录 -->
 			<view class="overview" v-if="member_store.member_info">
-				<navigator url="/pagesMember/MemberInfo/index" hover-class="none">
+				<navigator url="/pagesMember/memberInfo/index" hover-class="none">
 					<image class="avatar" mode="aspectFill" :src="member_store.member_info.avatar"></image>
 				</navigator>
 				<view class="meta">
 					<view class="nickname">{{ member_store.member_info.nickname || member_store.member_info.account }}</view>
-					<navigator class="extra" url="/pagesMember/MemberInfo/index" hover-class="none">
+					<navigator class="extra" url="/pagesMember/memberInfo/index" hover-class="none">
 						<text class="update">更新头像昵称</text>
 					</navigator>
 				</view>
