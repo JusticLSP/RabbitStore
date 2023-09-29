@@ -24,7 +24,8 @@ const interceptor = {
 		};
 		// 添加用户token信息
 		const member_store = useMemberStore();
-		options.header['Authorization'] = member_store.member_info?.token || null;
+		const token = member_store.member_info?.token;
+		if (token) options.header['Authorization'] = token;
 	}
 };
 
@@ -80,6 +81,14 @@ const http = {
 	 */
 	post: <T>(url: string, config: object = {}) => {
 		return httpRquest<T>({ url, method: 'POST', ...config });
+	},
+	/**
+	 * put 请求
+	 * @param  {String} url 接口地址
+	 * @param  {Object} config 请求配置
+	 */
+	put: <T>(url: string, config: object = {}) => {
+		return httpRquest<T>({ url, method: 'PUT', ...config });
 	}
 };
 
