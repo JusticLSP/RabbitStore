@@ -30,9 +30,9 @@
 				</view>
 				<!-- 操作面板 -->
 				<view class="action">
-					<view class="item arrow">
+					<view class="item arrow" @tap="onOpenSkuPopup(SkuMode.Both)">
 						<text class="label">选择</text>
-						<text class="text ellipsis">请选择商品规格</text>
+						<text class="text ellipsis">{{ select_arr_text }}</text>
 					</view>
 					<view class="item arrow" @tap="openPopup('address')">
 						<text class="label">送至</text>
@@ -101,8 +101,8 @@
 				</navigator>
 			</view>
 			<view class="buttons">
-				<view class="addcart">加入购物车</view>
-				<view class="buynow">立即购买</view>
+				<view class="addcart" @tap="onOpenSkuPopup(SkuMode.Cart)">加入购物车</view>
+				<view class="buynow" @tap="onOpenSkuPopup(SkuMode.Buy)">立即购买</view>
 			</view>
 		</view>
 	</template>
@@ -110,15 +110,29 @@
 		<AddressPanel v-if="popup_name === 'address'" @close="popup?.close()"></AddressPanel>
 		<ServicePanel v-if="popup_name === 'service'" @close="popup?.close()"></ServicePanel>
 	</uni-popup>
+	<!-- sku弹出层 -->
+	<vk-data-goods-sku-popup
+		ref="skuPopupRef"
+		v-model="is_show_sku"
+		:localdata="loacl_data"
+		:mode="mode"
+		add-cart-background-color="#ffa868"
+		buy-now-background-color="#27ba98"
+		:actived-style="{
+			color: 'rgb(39, 186, 155)',
+			borderColor: 'rgb(39, 186, 155)',
+			backgroundColor: 'rgba(39, 186, 155,0.1)'
+		}"></vk-data-goods-sku-popup>
 </template>
 <script setup lang="ts">
 import { getGoodsDetailsAPI } from '@/api/goods';
 import type { GoodsResult } from '@/types/goods';
 import { onLoad } from '@dcloudio/uni-app';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import AddressPanel from './components/AddressPanel.vue';
 import ServicePanel from './components/ServicePanel.vue';
 import PageSkeleton from './components/PageSkeleton.vue';
+import type { SkuPopupLocaldata, SkuPopupInstance } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup';
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
@@ -126,11 +140,53 @@ const { safeAreaInsets } = uni.getSystemInfoSync();
 // 接收页面参数
 const query = defineProps<{ id: string }>();
 
+// sku弹出层
+enum SkuMode {
+	Both = 1,
+	Cart = 2,
+	Buy = 3
+}
+const skuPopupRef = ref<SkuPopupInstance>();
+const is_show_sku = ref(false);
+const loacl_data = ref({} as SkuPopupLocaldata);
+const mode = ref<SkuMode>(SkuMode.Both);
+// 打开sku弹出层
+const onOpenSkuPopup = (type: SkuMode) => {
+	mode.value = type;
+	is_show_sku.value = true;
+};
+// 计算选中sku文本值
+const select_arr_text = computed(() => {
+	return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格';
+});
+
 // 获取商品详情信息
 const goods_details = ref<GoodsResult>();
 const getGoodsDetails = async () => {
 	const details = await getGoodsDetailsAPI(query.id);
 	goods_details.value = details;
+	// sku插件所需的数据格式
+	loacl_data.value = {
+		_id: details.id,
+		goods_thumb: details.mainPictures[0],
+		name: details.name,
+		spec_list: details.specs.map((item) => {
+			return { name: item.name, list: item.values };
+		}),
+		sku_list: details.skus.map((item) => {
+			return {
+				_id: item.id,
+				goods_id: details.id,
+				goods_name: details.name,
+				image: item.picture,
+				price: item.price * 100, // sku插件需要乘以100整数价格
+				stock: item.inventory,
+				sku_name_arr: item.specs.map((value) => {
+					return value.valueName;
+				})
+			};
+		})
+	};
 };
 
 // 更改主图轮播图
