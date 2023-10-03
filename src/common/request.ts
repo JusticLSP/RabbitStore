@@ -52,6 +52,9 @@ const httpRquest = <T>(options: UniApp.RequestOptions) => {
 					resolve(data as Data<T>);
 				} else if (statusCode === 401) {
 					// 401错误 --> 清理用户信息，跳转到登录页
+					const member_store = useMemberStore();
+					member_store.clearMemberInfo();
+					uni.navigateTo({ url: '/pages/login/index' });
 					reject(res);
 				} else {
 					// 其他状态码错误
@@ -81,6 +84,14 @@ const http = {
 	 */
 	post: <T>(url: string, config: object = {}) => {
 		return httpRquest<T>({ url, method: 'POST', ...config });
+	},
+	/**
+	 * delete 请求
+	 * @param  {String} url 接口地址
+	 * @param  {Object} config 请求配置
+	 */
+	delete: <T>(url: string, config: object = {}) => {
+		return httpRquest<T>({ url, method: 'DELETE', ...config });
 	},
 	/**
 	 * put 请求
