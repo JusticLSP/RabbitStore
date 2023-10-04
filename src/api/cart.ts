@@ -49,3 +49,15 @@ export const putMemberCartAPI = async (skuId: string, data: { selected?: boolean
 		});
 	} catch (error) {}
 };
+
+/**
+ * 修改购物车全选状态
+ * @param  {boolean} selected 更改状态
+ */
+export const putMemberCartSelectAllAPI = async (selected: boolean) => {
+	try {
+		const { result } = await http.put('/member/cart/selected', {
+			data: { selected }
+		});
+	} catch (error) {}
+};

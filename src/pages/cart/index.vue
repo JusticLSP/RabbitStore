@@ -16,7 +16,7 @@
 						<!-- 商品信息 -->
 						<view class="goods">
 							<!-- 选中状态 -->
-							<text class="checkbox" :class="{ checked: item.selected }"></text>
+							<text class="checkbox" :class="{ checked: item.selected }" @tap="onChangeSelectState(item)"></text>
 							<navigator :url="`/pages/goods/index?id=${item.id}`" hover-class="none" class="navigator">
 								<image mode="aspectFill" class="picture" :src="item.picture"></image>
 								<view class="meta">
@@ -54,7 +54,7 @@
 			</view>
 			<!-- 吸底工具栏 -->
 			<view class="toolbar">
-				<text class="all" :class="{ checked: true }">全选</text>
+				<text class="all" :class="{ checked: is_select_all }" @tap="onChangeSelectAllState">全选</text>
 				<text class="text">合计:</text>
 				<text class="amount">100</text>
 				<view class="button-grounp">
@@ -77,9 +77,9 @@
 </template>
 <script setup lang="ts">
 import { useMemberStore } from '@/stores/modules/member';
-import { getMemberCartAPI, delMemberCartAPI, putMemberCartAPI } from '@/api/cart';
+import { getMemberCartAPI, delMemberCartAPI, putMemberCartAPI, putMemberCartSelectAllAPI } from '@/api/cart';
 import type { CartItem } from '@/types/cart';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box';
 import debounce from '@/common/debounce';
@@ -106,10 +106,26 @@ const onDelCart = (sku_id: string) => {
 	});
 };
 // 更改购物车商品数量
-const onChangeCount = debounce(async (e: InputNumberBoxEvent) => {
+const onChangeCount = debounce((e: InputNumberBoxEvent) => {
 	const { value, index } = e;
-	await putMemberCartAPI(index, { count: value });
+	putMemberCartAPI(index, { count: value });
 }, 500);
+// 更改购物车商品选中状态
+const onChangeSelectState = (item: CartItem) => {
+	const { skuId, selected } = item;
+	const state = !selected;
+	item.selected = state;
+	putMemberCartAPI(skuId, { selected: state });
+};
+// 更改购物车商品全部选中状态
+const is_select_all = computed(() => {
+	return cart_list.value.length && cart_list.value.every((item) => item.selected === true);
+});
+const onChangeSelectAllState = () => {
+	const state = !is_select_all.value;
+	cart_list.value.forEach((item) => (item.selected = state));
+	putMemberCartSelectAllAPI(state);
+};
 
 onShow(() => {
 	getMemberCartData();
