@@ -143,16 +143,19 @@ const select_total_num = computed(() => {
 	}, 0);
 });
 const select_total_money = computed(() => {
-	return cart_list.value.reduce((curr, item) => {
-		if (item.selected) curr = curr + item.count * item.nowPrice;
-		return curr;
-	}, 0);
+	return cart_list.value
+		.reduce((curr, item) => {
+			if (item.selected) curr = curr + item.count * item.nowPrice;
+			return curr;
+		}, 0)
+		.toFixed(2);
 });
 // 去结算
 const onPayment = () => {
 	if (select_total_num.value === 0) {
 		uni.showToast({ icon: 'none', title: '请选择商品' });
 	}
+	uni.navigateTo({ url: '/pagesOrder/create/index' });
 };
 
 // 滚到底部时触发
