@@ -1,5 +1,5 @@
 <template>
-	<scroll-view scroll-y class="scroll-view">
+	<scroll-view scroll-y class="scroll-view" @scrolltolower="onScrolltolower">
 		<!-- 已登录: 显示购物车 -->
 		<template v-if="member_stroe.member_info">
 			<!-- 购物车列表 -->
@@ -85,6 +85,7 @@ import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box';
 import debounce from '@/common/debounce';
+import type { XtxGuessInstance } from '@/types/components';
 
 // 组件传递参数
 defineProps<{ toolbarSafeArea?: boolean }>();
@@ -154,8 +155,16 @@ const onPayment = () => {
 	}
 };
 
-onShow(() => {
-	getMemberCartData();
+// 滚到底部时触发
+const guessRef = ref<XtxGuessInstance>();
+const onScrolltolower = () => {
+	guessRef.value?.loadMore();
+};
+
+onShow(async () => {
+	uni.showLoading({ title: '加载中...' });
+	await getMemberCartData();
+	uni.hideLoading();
 });
 </script>
 <style lang="scss">
