@@ -5,31 +5,57 @@
 		<!-- 标题 -->
 		<view class="title">配送至</view>
 		<!-- 内容 -->
-		<view class="content">
-			<view class="item">
-				<view class="user">李明 13824686868</view>
-				<view class="address">北京市顺义区后沙峪地区安平北街6号院</view>
-				<text class="icon icon-checked"></text>
-			</view>
-			<view class="item">
-				<view class="user">王东 13824686868</view>
-				<view class="address">北京市顺义区后沙峪地区安平北街6号院</view>
-				<text class="icon icon-ring"></text>
-			</view>
-			<view class="item">
-				<view class="user">张三 13824686868</view>
-				<view class="address">北京市朝阳区孙河安平北街6号院</view>
-				<text class="icon icon-ring"></text>
-			</view>
+		<view class="content" v-if="address.length > 0">
+			<template v-for="(item, index) in address" :key="item.id">
+				<view class="item" @tap="onConfirmAddresss(item)">
+					<view class="user">{{ item.receiver }} {{ item.contact }}</view>
+					<view class="address">{{ item.fullLocation }} {{ item.address }}</view>
+					<text class="icon icon-checked" v-if="confirm_address === item.id"></text>
+				</view>
+			</template>
 		</view>
+		<view class="empty" v-else>暂无收获地址</view>
 		<view class="footer">
-			<view class="button primary">新建地址</view>
-			<view v-if="false" class="button primary">确定</view>
+			<navigator class="button primary" hover-class="none" url="/pagesMember/editAddress/index?from=goods">
+				新建地址
+			</navigator>
 		</view>
 	</view>
 </template>
 <script setup lang="ts">
-const emit = defineEmits<{ (event: 'close'): void }>();
+import { useAddressStroe } from '@/stores/modules/address';
+import type { AddressItem } from '@/types/common';
+import { ref, watch } from 'vue';
+
+// 组件传参
+const props = defineProps<{ list: AddressItem[] }>();
+// 组件自定义事件
+const emit = defineEmits<{
+	(event: 'close'): void;
+	(event: 'confirm', address: AddressItem): void;
+}>();
+
+const address = ref<AddressItem[]>(props.list);
+const confirm_address = ref<string>();
+// 确定收获地址
+const onConfirmAddresss = (item: AddressItem) => {
+	confirm_address.value = item.id;
+	emit('confirm', item);
+	emit('close');
+};
+
+// 新建地址
+const addresss_stroe = useAddressStroe();
+watch(
+	() => addresss_stroe.new_address,
+	(val, oldval) => {
+		if (val?.isDefault === 1) {
+			address.value.unshift(val);
+		} else {
+			val && address.value.push(val);
+		}
+	}
+);
 </script>
 <style lang="scss">
 .address-panel {
@@ -89,10 +115,17 @@ const emit = defineEmits<{ (event: 'close'): void }>();
 		color: #666;
 	}
 }
+.empty {
+	height: 300rpx;
+	padding: 20rpx;
+	line-height: 300rpx;
+	text-align: center;
+	color: #888;
+}
 .footer {
 	display: flex;
 	justify-content: space-between;
-	padding: 20rpx 0 40rpx;
+	padding: 20rpx 0 20prx;
 	font-size: 28rpx;
 	color: #444;
 	.button {

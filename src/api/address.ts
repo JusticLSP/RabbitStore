@@ -20,12 +20,12 @@ export const getMemberAddressAPI = async () => {
  */
 export const addMemberAddressAPI = async (data: AddressParams) => {
 	try {
-		const { result } = await http.post<{ id: number }>('/member/address', {
+		const { result } = await http.post<{ id: string }>('/member/address', {
 			data
 		});
 		return result;
 	} catch (error) {
-		return {} as { id: number };
+		return {} as { id: string };
 	}
 };
 

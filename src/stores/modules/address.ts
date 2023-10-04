@@ -5,6 +5,7 @@ import { store } from '../index';
 
 export const useAddressStroe = defineStore('address', () => {
 	const change_address = ref<AddressItem>();
+	const new_address = ref<AddressItem>();
 
 	/**
 	 * 更改选择地址
@@ -14,7 +15,15 @@ export const useAddressStroe = defineStore('address', () => {
 		change_address.value = address;
 	};
 
-	return { change_address, changeSelectAddress };
+	/**
+	 * 添加新地址
+	 * @param  {AddressItem} address 新地址
+	 */
+	const addNewAddress = (address: AddressItem) => {
+		new_address.value = address;
+	};
+
+	return { change_address, new_address, changeSelectAddress, addNewAddress };
 });
 
 // 在组件setup函数外使用

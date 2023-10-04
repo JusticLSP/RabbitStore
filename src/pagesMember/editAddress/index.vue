@@ -32,11 +32,12 @@
 </template>
 <script setup lang="ts">
 import { addMemberAddressAPI, putMemberAddressAPI, getMemberAddressDetailAPI } from '@/api/address';
+import { useAddressStroe } from '@/stores/modules/address';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 
 // 接收页面参数
-const query = defineProps<{ id: string }>();
+const query = defineProps<{ id: string; from: string }>();
 
 // 表单数据
 const form = ref({
@@ -93,13 +94,20 @@ const formRef = ref<UniHelper.UniFormsInstance>();
 const onSubmit = async () => {
 	try {
 		await formRef.value?.validate?.();
+		let address_id = '';
 		if (query.id) {
 			await putMemberAddressAPI(query.id, form.value);
 		} else {
-			await addMemberAddressAPI(form.value);
+			const result = await addMemberAddressAPI(form.value);
+			address_id = result.id;
 		}
 		uni.showToast({ icon: 'success', title: '保存成功' });
 		setTimeout(() => {
+			// 在商品详情页点击新建地址
+			if (query?.from === 'goods') {
+				const addresss_stroe = useAddressStroe();
+				addresss_stroe.addNewAddress({ id: address_id, ...form.value });
+			}
 			uni.navigateBack({ delta: 1 });
 		}, 500);
 	} catch (error) {

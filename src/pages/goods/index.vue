@@ -36,7 +36,10 @@
 					</view>
 					<view class="item arrow" @tap="openPopup('address')">
 						<text class="label">送至</text>
-						<text class="text ellipsis">请选择收获地址</text>
+						<text class="text ellipsis" v-if="confirm_address">
+							{{ confirm_address.fullLocation }} {{ confirm_address.address }}
+						</text>
+						<text class="text ellipsis" v-else>请选择收获地址</text>
 					</view>
 					<view class="item arrow" @tap="openPopup('service')">
 						<text class="label">服务</text>
@@ -107,7 +110,11 @@
 		</view>
 	</template>
 	<uni-popup ref="popup" type="bottom" background-color="#fff">
-		<AddressPanel v-if="popup_name === 'address'" @close="popup?.close()"></AddressPanel>
+		<AddressPanel
+			v-if="popup_name === 'address'"
+			:list="goods_details!.userAddresses"
+			@close="popup?.close()"
+			@confirm="onConfirmAddresss"></AddressPanel>
 		<ServicePanel v-if="popup_name === 'service'" @close="popup?.close()"></ServicePanel>
 	</uni-popup>
 	<!-- sku弹出层 -->
@@ -139,12 +146,19 @@ import type {
 	SkuPopupInstance,
 	SkuPopupEvent
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup';
+import type { AddressItem } from '@/types/common';
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
 
 // 接收页面参数
 const query = defineProps<{ id: string }>();
+
+// 确定收获地址
+const confirm_address = ref<AddressItem>();
+const onConfirmAddresss = (address: AddressItem) => {
+	confirm_address.value = address;
+};
 
 // 获取商品详情信息
 const goods_details = ref<GoodsResult>();
