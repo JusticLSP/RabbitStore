@@ -95,7 +95,7 @@
 					<text class="icon-handset"></text>
 					客服
 				</button>
-				<navigator class="icons-button" url="/pages/cart/cart" open-type="switchTab">
+				<navigator class="icons-button" url="/pages/cart/cart">
 					<text class="icon-cart"></text>
 					购物车
 				</navigator>
