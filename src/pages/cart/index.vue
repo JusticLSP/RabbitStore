@@ -16,7 +16,7 @@
 						<!-- 商品信息 -->
 						<view class="goods">
 							<!-- 选中状态 -->
-							<text class="checkbox" :class="{ checked: true }"></text>
+							<text class="checkbox" :class="{ checked: item.selected }"></text>
 							<navigator :url="`/pages/goods/index?id=${item.id}`" hover-class="none" class="navigator">
 								<image mode="aspectFill" class="picture" :src="item.picture"></image>
 								<view class="meta">
@@ -27,9 +27,12 @@
 							</navigator>
 							<!-- 商品数量 -->
 							<view class="count">
-								<text class="text">-</text>
-								<input class="input" type="number" :value="item.count.toString()" />
-								<text class="text">+</text>
+								<vk-data-input-number-box
+									v-model="item.count"
+									:min="1"
+									:max="item.stock"
+									:index="item.skuId"
+									@change="onChangeCount"></vk-data-input-number-box>
 							</view>
 						</view>
 						<!-- 右侧删除按钮 -->
@@ -74,10 +77,12 @@
 </template>
 <script setup lang="ts">
 import { useMemberStore } from '@/stores/modules/member';
-import { getMemberCartAPI, delMemberCartAPI } from '@/api/cart';
+import { getMemberCartAPI, delMemberCartAPI, putMemberCartAPI } from '@/api/cart';
 import type { CartItem } from '@/types/cart';
 import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
+import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box';
+import debounce from '@/common/debounce';
 
 // 用户信息
 const member_stroe = useMemberStore();
@@ -100,6 +105,11 @@ const onDelCart = (sku_id: string) => {
 		}
 	});
 };
+// 更改购物车商品数量
+const onChangeCount = debounce(async (e: InputNumberBoxEvent) => {
+	const { value, index } = e;
+	await putMemberCartAPI(index, { count: value });
+}, 500);
 
 onShow(() => {
 	getMemberCartData();
