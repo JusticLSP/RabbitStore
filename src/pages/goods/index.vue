@@ -130,7 +130,8 @@
 			borderColor: 'rgb(39, 186, 155)',
 			backgroundColor: 'rgba(39, 186, 155,0.1)'
 		}"
-		@add-cart="onAddCart"></vk-data-goods-sku-popup>
+		@add-cart="onAddCart"
+		@buy-now="onBuyNow"></vk-data-goods-sku-popup>
 </template>
 <script setup lang="ts">
 import { getGoodsDetailsAPI } from '@/api/goods';
@@ -236,6 +237,13 @@ const onAddCart = async (e: SkuPopupEvent) => {
 	const { _id, buy_num } = e;
 	await postMemberCartAPI({ skuId: _id, count: buy_num });
 	uni.showToast({ icon: 'success', title: '添加成功' });
+	is_show_sku.value = false;
+};
+// 立即购买
+const onBuyNow = (e: SkuPopupEvent) => {
+	uni.navigateTo({
+		url: `/pagesOrder/create/index?skuId=${e._id}&count=${e.buy_num}&addressId=${confirm_address.value?.id || ''}`
+	});
 	is_show_sku.value = false;
 };
 

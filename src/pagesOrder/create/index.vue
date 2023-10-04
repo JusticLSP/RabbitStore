@@ -68,11 +68,14 @@
 	</view>
 </template>
 <script setup lang="ts">
-import { getMemberOrderInfoAPI } from '@/api/order';
+import { getMemberOrderInfoAPI, getMemberOrderNowAPI } from '@/api/order';
 import type { OrderPreResult } from '@/types/order';
 import { onLoad } from '@dcloudio/uni-app';
 import { computed, ref } from 'vue';
 import { useAddressStroe } from '@/stores/modules/address';
+
+// 页面接收参数
+const query = defineProps<{ skuId: string; count: string; addressId: string }>();
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
@@ -94,19 +97,31 @@ const onChangeDelivery: UniHelper.SelectorPickerOnChange = (ev) => {
 	active_index.value = ev.detail.value;
 };
 
-// 获取预付订单信息
+// 获取订单信息
 const order_info = ref({} as OrderPreResult);
 const getMemberOrderInfoData = async () => {
-	const result = await getMemberOrderInfoAPI();
-	order_info.value = result;
+	const { skuId, count, addressId } = query;
+	if (skuId && count) {
+		const result = await getMemberOrderNowAPI({ skuId, count, addressId });
+		order_info.value = result;
+	} else {
+		const result = await getMemberOrderInfoAPI();
+		order_info.value = result;
+	}
 };
 // 收获地址
 const address_stroe = useAddressStroe();
 const select_address = computed(() => {
-	return address_stroe.change_address || order_info.value.userAddresses?.find((item) => item.isDefault === 1);
+	// 重新更改收获地址
+	if (address_stroe.change_address) return address_stroe.change_address;
+	// 立即购买并且有携带地址ID
+	if (query.addressId) return order_info.value.userAddresses?.[0];
+	// 默认地址
+	return order_info.value.userAddresses?.find((item) => item.isDefault === 1);
 });
 
 onLoad(() => {
+	address_stroe.change_address = undefined;
 	getMemberOrderInfoData();
 });
 </script>
