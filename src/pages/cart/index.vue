@@ -56,9 +56,11 @@
 			<view class="toolbar">
 				<text class="all" :class="{ checked: is_select_all }" @tap="onChangeSelectAllState">全选</text>
 				<text class="text">合计:</text>
-				<text class="amount">100</text>
+				<text class="amount">{{ select_total_money }}</text>
 				<view class="button-grounp">
-					<view class="button payment-button" :class="{ disabled: true }">去结算(10)</view>
+					<view class="button payment-button" :class="{ disabled: select_total_num === 0 }" @tap="onPayment">
+						去结算({{ select_total_num }})
+					</view>
 				</view>
 			</view>
 		</template>
@@ -125,6 +127,25 @@ const onChangeSelectAllState = () => {
 	const state = !is_select_all.value;
 	cart_list.value.forEach((item) => (item.selected = state));
 	putMemberCartSelectAllAPI(state);
+};
+// 计算底部结算信息
+const select_total_num = computed(() => {
+	return cart_list.value.reduce((curr, item) => {
+		if (item.selected) curr = curr + item.count;
+		return curr;
+	}, 0);
+});
+const select_total_money = computed(() => {
+	return cart_list.value.reduce((curr, item) => {
+		if (item.selected) curr = curr + item.count * item.nowPrice;
+		return curr;
+	}, 0);
+});
+// 去结算
+const onPayment = () => {
+	if (select_total_num.value === 0) {
+		uni.showToast({ icon: 'none', title: '请选择商品' });
+	}
 };
 
 onShow(() => {
