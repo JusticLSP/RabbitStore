@@ -17,7 +17,7 @@
 			<scroll-view class="scroll-view" scroll-y v-show="active_index === index" @scrolltolower="onScrolltolower">
 				<view class="goods">
 					<template v-for="goods in item.goodsItems.items" :key="goods.id">
-						<navigator class="navigator" hover-class="none" :url="`/pages/goods/goods?id=${goods.id}`">
+						<navigator class="navigator" hover-class="none" :url="`/pages/goods/index?id=${goods.id}`">
 							<image class="thumb" :src="goods.picture"></image>
 							<view class="name ellipsis">{{ goods.name }}</view>
 							<view class="price">
