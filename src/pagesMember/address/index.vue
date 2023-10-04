@@ -7,14 +7,18 @@
 					<!-- 收货地址项 -->
 					<template v-for="item in address" :key="item.id">
 						<uni-swipe-action-item class="item">
-							<view class="item-content">
+							<view class="item-content" @tap="onChangeSelectAddress(item)">
 								<view class="user">
 									{{ item.receiver }}
 									<text class="contact">{{ item.contact }}</text>
 									<text v-if="item.isDefault" class="badge">默认</text>
 								</view>
 								<view class="locate">{{ item.fullLocation }} {{ item.address }}</view>
-								<navigator class="edit" hover-class="none" :url="`/pagesMember/editAddress/index?id=${item.id}`">
+								<navigator
+									class="edit"
+									hover-class="none"
+									:url="`/pagesMember/editAddress/index?id=${item.id}`"
+									@tap.stop="">
 									修改
 								</navigator>
 							</view>
@@ -35,9 +39,13 @@
 </template>
 <script setup lang="ts">
 import { delMemberAddressAPI, getMemberAddressAPI } from '@/api/address';
+import { useAddressStroe } from '@/stores/modules/address';
 import type { AddressItem } from '@/types/common';
 import { onShow } from '@dcloudio/uni-app';
 import { ref } from 'vue';
+
+// 页面传递参数
+const query = defineProps<{ from: string }>();
 
 // 安全距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
@@ -63,6 +71,14 @@ const onDelAddress = (id: string) => {
 			}
 		}
 	});
+};
+
+// 更改选择地址
+const address_stroe = useAddressStroe();
+const onChangeSelectAddress = (address: AddressItem) => {
+	if (query.from !== 'order') return;
+	address_stroe.changeSelectAddress(address);
+	uni.navigateBack({ delta: 1 });
 };
 
 onShow(() => {

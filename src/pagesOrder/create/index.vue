@@ -1,12 +1,12 @@
 <template>
 	<scroll-view scroll-y class="viewport">
 		<!-- 收货地址 -->
-		<navigator v-if="false" class="shipment" hover-class="none" url="/pagesMember/address/address?from=order">
-			<view class="user">张三 13333333333</view>
-			<view class="address">广东省 广州市 天河区 黑马程序员3</view>
+		<navigator v-if="select_address" class="shipment" hover-class="none" url="/pagesMember/address/index?from=order">
+			<view class="user">{{ select_address.receiver }} {{ select_address.contact }}</view>
+			<view class="address">{{ select_address.fullLocation }} {{ select_address.address }}</view>
 			<text class="icon icon-right"></text>
 		</navigator>
-		<navigator v-else class="shipment" hover-class="none" url="/pagesMember/address/address?from=order">
+		<navigator v-else class="shipment" hover-class="none" url="/pagesMember/address/index?from=order">
 			<view class="address">请选择收货地址</view>
 			<text class="icon icon-right"></text>
 		</navigator>
@@ -72,6 +72,7 @@ import { getMemberOrderInfoAPI } from '@/api/order';
 import type { OrderPreResult } from '@/types/order';
 import { onLoad } from '@dcloudio/uni-app';
 import { computed, ref } from 'vue';
+import { useAddressStroe } from '@/stores/modules/address';
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
@@ -99,6 +100,11 @@ const getMemberOrderInfoData = async () => {
 	const result = await getMemberOrderInfoAPI();
 	order_info.value = result;
 };
+// 收获地址
+const address_stroe = useAddressStroe();
+const select_address = computed(() => {
+	return address_stroe.change_address || order_info.value.userAddresses?.find((item) => item.isDefault === 1);
+});
 
 onLoad(() => {
 	getMemberOrderInfoData();
