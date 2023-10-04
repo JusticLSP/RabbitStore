@@ -44,7 +44,7 @@
 					class="input"
 					:cursor-spacing="30"
 					placeholder="选题，建议留言前先与商家沟通确认"
-					v-model="buyerMessage" />
+					v-model="buyer_message" />
 			</view>
 		</view>
 		<!-- 支付金额 -->
@@ -64,11 +64,11 @@
 		<view class="total-pay symbol">
 			<text class="number">{{ order_info?.summary?.totalPayPrice.toFixed(2) || '0.00' }}</text>
 		</view>
-		<view class="button" :class="{ disabled: true }">提交订单</view>
+		<view class="button" :class="{ disabled: !select_address?.id }" @tap="onOrderSubmit">提交订单</view>
 	</view>
 </template>
 <script setup lang="ts">
-import { getMemberOrderInfoAPI, getMemberOrderNowAPI } from '@/api/order';
+import { getMemberOrderInfoAPI, getMemberOrderNowAPI, postMemberOrderAPI } from '@/api/order';
 import type { OrderPreResult } from '@/types/order';
 import { onLoad } from '@dcloudio/uni-app';
 import { computed, ref } from 'vue';
@@ -81,7 +81,7 @@ const query = defineProps<{ skuId: string; count: string; addressId: string }>()
 const { safeAreaInsets } = uni.getSystemInfoSync();
 
 // 订单备注
-const buyerMessage = ref('');
+const buyer_message = ref('');
 // 配送时间
 const delivery_list = ref([
 	{ type: 1, text: '时间不限 (周一至周日)' },
@@ -119,6 +119,24 @@ const select_address = computed(() => {
 	// 默认地址
 	return order_info.value.userAddresses?.find((item) => item.isDefault === 1);
 });
+
+// 提交订单
+const onOrderSubmit = async () => {
+	if (!select_address.value?.id) {
+		return uni.showToast({ icon: 'none', title: '请选择收货地址' });
+	}
+	uni.showLoading({ title: '提交中...' });
+	const result = await postMemberOrderAPI({
+		addressId: select_address.value.id,
+		buyerMessage: buyer_message.value,
+		deliveryTimeType: active_delivery.value.type,
+		goods: order_info.value!.goods.map((item) => ({ skuId: item.skuId, count: item.count })),
+		payChannel: 2,
+		payType: 1
+	});
+	uni.hideLoading();
+	uni.redirectTo({ url: `/pagesOrder/detail/index?id=${result.id}` });
+};
 
 onLoad(() => {
 	address_stroe.change_address = undefined;
