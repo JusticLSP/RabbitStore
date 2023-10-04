@@ -122,43 +122,29 @@
 			color: 'rgb(39, 186, 155)',
 			borderColor: 'rgb(39, 186, 155)',
 			backgroundColor: 'rgba(39, 186, 155,0.1)'
-		}"></vk-data-goods-sku-popup>
+		}"
+		@add-cart="onAddCart"></vk-data-goods-sku-popup>
 </template>
 <script setup lang="ts">
 import { getGoodsDetailsAPI } from '@/api/goods';
+import { postMemberCartAPI } from '@/api/cart';
 import type { GoodsResult } from '@/types/goods';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, computed } from 'vue';
 import AddressPanel from './components/AddressPanel.vue';
 import ServicePanel from './components/ServicePanel.vue';
 import PageSkeleton from './components/PageSkeleton.vue';
-import type { SkuPopupLocaldata, SkuPopupInstance } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup';
+import type {
+	SkuPopupLocaldata,
+	SkuPopupInstance,
+	SkuPopupEvent
+} from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup';
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
 
 // 接收页面参数
 const query = defineProps<{ id: string }>();
-
-// sku弹出层
-enum SkuMode {
-	Both = 1,
-	Cart = 2,
-	Buy = 3
-}
-const skuPopupRef = ref<SkuPopupInstance>();
-const is_show_sku = ref(false);
-const loacl_data = ref({} as SkuPopupLocaldata);
-const mode = ref<SkuMode>(SkuMode.Both);
-// 打开sku弹出层
-const onOpenSkuPopup = (type: SkuMode) => {
-	mode.value = type;
-	is_show_sku.value = true;
-};
-// 计算选中sku文本值
-const select_arr_text = computed(() => {
-	return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格';
-});
 
 // 获取商品详情信息
 const goods_details = ref<GoodsResult>();
@@ -210,6 +196,33 @@ const popup_name = ref<'address' | 'service'>();
 const openPopup = (name: typeof popup_name.value) => {
 	popup_name.value = name;
 	popup.value?.open();
+};
+
+// sku弹出层
+enum SkuMode {
+	Both = 1,
+	Cart = 2,
+	Buy = 3
+}
+const skuPopupRef = ref<SkuPopupInstance>();
+const is_show_sku = ref(false);
+const loacl_data = ref({} as SkuPopupLocaldata);
+const mode = ref<SkuMode>(SkuMode.Both);
+// 计算选中sku文本值
+const select_arr_text = computed(() => {
+	return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格';
+});
+// 打开sku弹出层
+const onOpenSkuPopup = (type: SkuMode) => {
+	mode.value = type;
+	is_show_sku.value = true;
+};
+// 添加到购物车
+const onAddCart = async (e: SkuPopupEvent) => {
+	const { _id, buy_num } = e;
+	await postMemberCartAPI({ skuId: _id, count: buy_num });
+	uni.showToast({ icon: 'success', title: '添加成功' });
+	is_show_sku.value = false;
 };
 
 // 页面加载
