@@ -1,0 +1,75 @@
+// 吸底工具栏
+.toolbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: var(--window-bottom);
+	z-index: 2;
+	height: 100rpx;
+	padding: 0 20rpx;
+	display: flex;
+	align-items: center;
+	border-top: 1rpx solid #ededed;
+	border-bottom: 1rpx solid #ededed;
+	background-color: #fff;
+	box-sizing: content-box;
+	.all {
+		margin-left: 25rpx;
+		font-size: 14px;
+		color: #444;
+		display: flex;
+		align-items: center;
+	}
+	.all::before {
+		font-family: 'erabbit' !important;
+		content: '\e6cd';
+		font-size: 40rpx;
+		margin-right: 8rpx;
+	}
+	.checked::before {
+		content: '\e6cc';
+		color: #27ba9b;
+	}
+	.text {
+		margin-right: 8rpx;
+		margin-left: 32rpx;
+		color: #444;
+		font-size: 14px;
+	}
+	.amount {
+		font-size: 20px;
+		color: #cf4444;
+		.decimal {
+			font-size: 12px;
+		}
+		&::before {
+			content: '￥';
+			font-size: 12px;
+		}
+	}
+	.button-grounp {
+		margin-left: auto;
+		display: flex;
+		justify-content: space-between;
+		text-align: center;
+		line-height: 72rpx;
+		font-size: 13px;
+		color: #fff;
+		.button {
+			width: 240rpx;
+			margin: 0 10rpx;
+			border-radius: 72rpx;
+		}
+		.payment-button {
+			background-color: #27ba9b;
+
+			&.disabled {
+				opacity: 0.6;
+			}
+		}
+	}
+}
+// 底部占位空盒子
+.toolbar-height {
+	height: 100rpx;
+}
