@@ -148,6 +148,12 @@
 						"navigationStyle": "custom",
 						"navigationBarTextStyle": "white"
 					}
+				},
+				{
+					"path": "payment/index",
+					"style": {
+						"navigationBarTitleText": "支付结果"
+					}
 				}
 			]
 		}

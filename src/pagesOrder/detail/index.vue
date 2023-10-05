@@ -17,9 +17,15 @@
 					<view class="tips">
 						<text class="money">应付金额: ¥ 99.00</text>
 						<text class="time">支付剩余</text>
-						00 时 29 分 59 秒
+						<uni-countdown
+							:second="order.countdown"
+							color="#fff"
+							splitor-color="#fff"
+							:show-day="false"
+							:show-colon="false"
+							@timeup="onTimeup"></uni-countdown>
 					</view>
-					<view class="button">去支付</view>
+					<view class="button" @tap="onOrderPay">去支付</view>
 				</template>
 				<!-- 其他订单状态:展示再次购买按钮 -->
 				<template v-else>
@@ -152,6 +158,7 @@
 <script setup lang="ts">
 import { OrderState, orderStateList } from '@/api/constants';
 import { getMemberOrderDateilAPI } from '@/api/order';
+import { getPayWxPayMiniPayAPI, getPayMockAPI } from '@/api/pay';
 import type { XtxGuessInstance } from '@/types/components';
 import type { OrderResult } from '@/types/order';
 import { onLoad, onReady } from '@dcloudio/uni-app';
@@ -209,6 +216,23 @@ const order = ref<OrderResult>();
 const getMemberOrderDateilData = async () => {
 	const result = await getMemberOrderDateilAPI(query.id);
 	order.value = result;
+};
+// 倒计时结束
+const onTimeup = () => {
+	order.value!.orderState = OrderState.YiQuXiao;
+};
+// 订单支付
+const onOrderPay = async () => {
+	try {
+		const order_id = order.value!.id;
+		if (import.meta.env.DEV) {
+			await getPayMockAPI(order_id);
+		} else {
+			const result = await getPayWxPayMiniPayAPI(order_id);
+			await wx.requestPayment(result);
+		}
+		uni.redirectTo({ url: `/pagesOrder/payment/index?id=${order_id}` });
+	} catch (error) {}
 };
 
 onLoad(async () => {
