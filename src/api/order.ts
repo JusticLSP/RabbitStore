@@ -1,5 +1,5 @@
 import http from '@/common/request';
-import type { OrderCreateParams, OrderPreResult } from '@/types/order';
+import type { OrderCreateParams, OrderPreResult, OrderResult } from '@/types/order';
 
 /**
  * 获取预付订单信息
@@ -40,5 +40,18 @@ export const postMemberOrderAPI = async (data: OrderCreateParams) => {
 		return result;
 	} catch (error) {
 		return {} as { id: string };
+	}
+};
+
+/**
+ * 获取订单详情
+ * @param  {string} id 订单ID
+ */
+export const getMemberOrderDateilAPI = async (id: string) => {
+	try {
+		const { result } = await http.get<OrderResult>(`/member/order/${id}`);
+		return result;
+	} catch (error) {
+		return {} as OrderResult;
 	}
 };

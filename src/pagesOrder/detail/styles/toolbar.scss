@@ -1,0 +1,48 @@
+.toolbar-height {
+	height: 100rpx;
+	box-sizing: content-box;
+}
+.toolbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: calc(var(--window-bottom));
+	z-index: 1;
+	height: 100rpx;
+	padding: 0 20rpx;
+	display: flex;
+	align-items: center;
+	flex-direction: row-reverse;
+	border-top: 1rpx solid #ededed;
+	border-bottom: 1rpx solid #ededed;
+	background-color: #fff;
+	box-sizing: content-box;
+	.button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 200rpx;
+		height: 72rpx;
+		margin-left: 15rpx;
+		font-size: 26rpx;
+		border-radius: 72rpx;
+		border: 1rpx solid #ccc;
+		color: #444;
+	}
+	.delete {
+		order: 4;
+	}
+	.button {
+		order: 3;
+	}
+	.secondary {
+		order: 2;
+		color: #27ba9b;
+		border-color: #27ba9b;
+	}
+	.primary {
+		order: 1;
+		color: #fff;
+		background-color: #27ba9b;
+	}
+}
