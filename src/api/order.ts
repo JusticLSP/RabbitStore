@@ -1,5 +1,5 @@
 import http from '@/common/request';
-import type { OrderCreateParams, OrderPreResult, OrderResult } from '@/types/order';
+import type { OrderCreateParams, OrderLogisticResult, OrderPreResult, OrderResult } from '@/types/order';
 
 /**
  * 获取预付订单信息
@@ -63,6 +63,70 @@ export const postMemberOrderAPI = async (data: OrderCreateParams) => {
 export const getMemberOrderDateilAPI = async (id: string) => {
 	try {
 		const { result } = await http.get<OrderResult>(`/member/order/${id}`);
+		return result;
+	} catch (error) {
+		return {} as OrderResult;
+	}
+};
+
+/**
+ * 模拟订单发货
+ * @param  {string} id 订单ID
+ */
+export const getMemberOrderConsignmentAPI = async (id: string) => {
+	try {
+		const { result } = await http.get(`/member/order/consignment/${id}`);
+	} catch (error) {}
+};
+
+/**
+ * 订单确认收货
+ * @param  {string} id 订单ID
+ */
+export const putMemberOrderReceiptAPI = async (id: string) => {
+	try {
+		const { result } = await http.put<OrderResult>(`/member/order/${id}/receipt`);
+		return result;
+	} catch (error) {
+		return {} as OrderResult;
+	}
+};
+
+/**
+ * 获取订单物流信息
+ * @param  {string} id 订单ID
+ */
+export const getMemberOrderLogisticsAPI = async (id: string) => {
+	try {
+		const { result } = await http.get<OrderLogisticResult>(`/member/order/${id}/logistics`);
+		return result;
+	} catch (error) {
+		return {} as OrderLogisticResult;
+	}
+};
+
+/**
+ * 删除订单
+ * @param  {string[]} ids 订单ID集合
+ */
+export const delMemberOrderAPI = async (ids: string[]) => {
+	try {
+		const { result } = await http.delete('/member/order', {
+			data: { ids }
+		});
+	} catch (error) {}
+};
+
+/**
+ * 取消订单
+ * @param  {string} id 订单ID
+ * @param  {string} cancelReason 取消理由
+ */
+export const putMemberOrderCancelAPI = async (id: string, cancelReason: string) => {
+	try {
+		const { result } = await http.put<OrderResult>(`/member/order/${id}/cancel`, {
+			data: { cancelReason }
+		});
 		return result;
 	} catch (error) {
 		return {} as OrderResult;

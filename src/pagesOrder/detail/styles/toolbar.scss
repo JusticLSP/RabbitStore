@@ -31,6 +31,8 @@
 	}
 	.delete {
 		order: 4;
+		border-color: $uni-color-error;
+		color: $uni-color-error;
 	}
 	.button {
 		order: 3;
