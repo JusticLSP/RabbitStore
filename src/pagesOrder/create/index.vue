@@ -68,14 +68,19 @@
 	</view>
 </template>
 <script setup lang="ts">
-import { getMemberOrderInfoAPI, getMemberOrderNowAPI, postMemberOrderAPI } from '@/api/order';
+import {
+	getMemberOrderInfoAPI,
+	getMemberOrderNowAPI,
+	getMemberOrderRepurchaseAPI,
+	postMemberOrderAPI
+} from '@/api/order';
 import type { OrderPreResult } from '@/types/order';
 import { onLoad } from '@dcloudio/uni-app';
 import { computed, ref } from 'vue';
 import { useAddressStroe } from '@/stores/modules/address';
 
 // 页面接收参数
-const query = defineProps<{ skuId: string; count: string; addressId: string }>();
+const query = defineProps<{ skuId: string; count: string; addressId: string; orderId: string }>();
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync();
@@ -100,11 +105,17 @@ const onChangeDelivery: UniHelper.SelectorPickerOnChange = (ev) => {
 // 获取订单信息
 const order_info = ref({} as OrderPreResult);
 const getMemberOrderInfoData = async () => {
-	const { skuId, count, addressId } = query;
+	const { skuId, count, addressId, orderId } = query;
 	if (skuId && count) {
+		// 商品详情立即购买
 		const result = await getMemberOrderNowAPI({ skuId, count, addressId });
 		order_info.value = result;
+	} else if (orderId) {
+		// 订单详情再次购买
+		const result = await getMemberOrderRepurchaseAPI(orderId);
+		order_info.value = result;
 	} else {
+		// 购物车预付订单
 		const result = await getMemberOrderInfoAPI();
 		order_info.value = result;
 	}

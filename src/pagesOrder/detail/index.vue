@@ -26,7 +26,7 @@
 					<!-- 订单状态文字 -->
 					<view class="status">{{ orderStateList[order.orderState].text }}</view>
 					<view class="button-group">
-						<navigator class="button" :url="`/pagesOrder/create/create?orderId=${query.id}`" hover-class="none">
+						<navigator class="button" :url="`/pagesOrder/create/index?orderId=${query.id}`" hover-class="none">
 							再次购买
 						</navigator>
 						<!-- 待发货状态：模拟发货,开发期间使用,用于修改订单状态为已发货 -->
