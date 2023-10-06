@@ -43,12 +43,12 @@ export const getHomeHotAPI = async () => {
 
 /**
  * 获取首页猜你喜欢
- * @param  {PageParams} data? 分页参数
+ * @param  {PageParams} page? 分页参数
  */
-export const getHomeGuessLikeAPI = async (data?: PageParams) => {
+export const getHomeGuessLikeAPI = async (page?: PageParams) => {
 	try {
 		const { result } = await http.get<PageResult<GuessItem>>('/home/goods/guessLike', {
-			data
+			data: page
 		});
 		return result;
 	} catch (error) {
