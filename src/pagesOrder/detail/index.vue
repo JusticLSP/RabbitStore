@@ -192,6 +192,7 @@ const pages = getCurrentPages();
 type PageInstance = Page.PageInstance & WechatMiniprogram.Page.InstanceMethods<any>;
 const pages_instance = pages.at(-1) as PageInstance;
 onReady(() => {
+	// #ifdef MP-WEIXIN
 	const scroll_timeline = {
 		scrollSource: '#scroller',
 		timeRange: 1000,
@@ -206,6 +207,7 @@ onReady(() => {
 	);
 	pages_instance.animate('.navbar .title', [{ color: 'transparent' }, { color: '#000' }], 1000, scroll_timeline);
 	pages_instance.animate('.navbar .back', [{ color: '#fff' }, { color: '#000' }], 1000, scroll_timeline);
+	// #endif
 });
 
 // 滚到底部时触发
@@ -261,10 +263,13 @@ const onOrderPay = async () => {
 		uni.showLoading({ title: '支付中...' });
 		if (import.meta.env.DEV) {
 			await getPayMockAPI(query.id);
-		} else {
+		}
+		// #ifdef MP-WEIXIN
+		else {
 			const result = await getPayWxPayMiniPayAPI(query.id);
 			await wx.requestPayment(result);
 		}
+		// #endif
 		uni.hideLoading();
 		uni.redirectTo({ url: `/pagesOrder/payment/index?id=${query.id}` });
 	} catch (error) {}

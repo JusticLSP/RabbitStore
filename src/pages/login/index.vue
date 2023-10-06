@@ -5,14 +5,18 @@
 		</view>
 		<view class="login">
 			<!-- 网页端表单登录 -->
-			<!-- <input class="input" type="text" placeholder="请输入用户名/手机号码" /> -->
-			<!-- <input class="input" type="text" password placeholder="请输入密码" /> -->
-			<!-- <button class="button phone">登录</button> -->
+			<!-- #ifdef H5 -->
+			<input class="input" type="text" placeholder="请输入用户名/手机号码" />
+			<input class="input" type="text" password placeholder="请输入密码" />
+			<button class="button phone">登录</button>
+			<!-- #endif -->
 			<!-- 小程序端授权登录 -->
+			<!-- #ifdef MP-WEIXIN -->
 			<button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetphonenumber">
 				<text class="icon icon-phone"></text>
 				手机号快捷登录
 			</button>
+			<!-- #endif -->
 			<view class="extra">
 				<view class="caption">
 					<text>其他登录方式</text>
@@ -34,12 +38,12 @@ import { useMemberStore } from '@/stores/modules/member';
 import type { LoginResult } from '@/types/member';
 import { onLoad } from '@dcloudio/uni-app';
 
+// #ifdef MP-WEIXIN
 let code = '';
 onLoad(async () => {
 	const result = await uni.login();
 	code = result.code;
 });
-
 // 获取用户手机号并请求登录
 const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (e) => {
 	if (e.detail?.errMsg) return uni.showToast({ icon: 'none', title: '无法获取，请模拟登录' });
@@ -48,6 +52,8 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (e) => {
 	const result = await postLoginAPI({ code, encryptedData, iv });
 	loginSuccess(result);
 };
+// #endif
+
 // 模拟登录
 const simplePostLogin = async () => {
 	const result = await simplePostLoginAPI('13521541265');
