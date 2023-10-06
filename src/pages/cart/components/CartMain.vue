@@ -153,7 +153,7 @@ const select_total_money = computed(() => {
 // 去结算
 const onPayment = () => {
 	if (select_total_num.value === 0) {
-		uni.showToast({ icon: 'none', title: '请选择商品' });
+		return uni.showToast({ icon: 'none', title: '请选择商品' });
 	}
 	uni.navigateTo({ url: '/pagesOrder/create/index' });
 };
