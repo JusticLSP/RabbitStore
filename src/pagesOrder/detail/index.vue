@@ -134,12 +134,7 @@
 					<!-- 待评价状态: 展示去评价 -->
 					<view class="button" v-if="order.orderState === OrderState.DaiPingJia">去评价</view>
 					<!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
-					<view
-						class="button delete"
-						v-if="[OrderState.DaiPingJia, OrderState.YiQuXiao, OrderState.YiWanCheng].includes(order.orderState)"
-						@tap="onDelOrder">
-						删除订单
-					</view>
+					<view class="button delete" v-if="order.orderState >= OrderState.DaiPingJia" @tap="onDelOrder">删除订单</view>
 				</template>
 			</view>
 		</template>
