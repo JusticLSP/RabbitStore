@@ -1,5 +1,5 @@
 import type { OrderState } from '@/api/constants';
-import type { AddressItem } from './common';
+import type { AddressItem, PageResult } from './common';
 
 /** 获取预付订单 返回信息 */
 export type OrderPreResult = {
@@ -132,4 +132,13 @@ export type LogisticItem = {
 	text: string;
 	/** 时间 */
 	time: string;
+};
+
+/** 订单列表 */
+export type OrderListResult = PageResult<OrderItem>;
+
+/** 订单列表项 */
+export type OrderItem = OrderResult & {
+	/** 总件数 */
+	totalNum: number;
 };

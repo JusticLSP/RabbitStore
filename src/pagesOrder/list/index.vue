@@ -13,7 +13,7 @@
 			<!-- 滑动项 -->
 			<swiper-item v-for="item in order_tabs" :key="item.title">
 				<!-- 订单列表 -->
-				<OrderList></OrderList>
+				<OrderList :order-state="item.order_state"></OrderList>
 			</swiper-item>
 		</swiper>
 	</view>

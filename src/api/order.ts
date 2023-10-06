@@ -1,5 +1,12 @@
 import http from '@/common/request';
-import type { OrderCreateParams, OrderLogisticResult, OrderPreResult, OrderResult } from '@/types/order';
+import type { PageParams } from '@/types/common';
+import type {
+	OrderCreateParams,
+	OrderListResult,
+	OrderLogisticResult,
+	OrderPreResult,
+	OrderResult
+} from '@/types/order';
 
 /**
  * 获取预付订单信息
@@ -130,5 +137,21 @@ export const putMemberOrderCancelAPI = async (id: string, cancelReason: string) 
 		return result;
 	} catch (error) {
 		return {} as OrderResult;
+	}
+};
+
+/**
+ * 获取订单列表
+ * @param  {PageParams} page? 请求分页
+ * @param  {{orderState:number}} params? 请求参数
+ */
+export const getMemberOrderListAPI = async (page?: PageParams, params?: { orderState: number }) => {
+	try {
+		const { result } = await http.get<OrderListResult>('/member/order', {
+			data: Object.assign({}, page, params)
+		});
+		return result;
+	} catch (error) {
+		return {} as OrderListResult;
 	}
 };
